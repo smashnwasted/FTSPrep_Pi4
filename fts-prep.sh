@@ -30,7 +30,7 @@ echo "[+] Uninstalling old Python packages..."
 pip3 uninstall -y FreeTAKServer FreeTAKHub FreeTAKServer-UI digitalpy || true
 
 echo "[+] Resetting firewall..."
-ufw reset || true
+ufw --force reset
 ufw default deny incoming
 ufw default allow outgoing
 ufw enable
@@ -57,13 +57,8 @@ echo "[+] Enabling Redis & PostgreSQL..."
 systemctl enable --now redis-server
 systemctl enable --now postgresql
 
-echo "[+] Installing Python build tools..."
-python3 -m pip install --upgrade pip setuptools wheel
-
-echo "[+] Installing Python 3.10 if not present..."
-apt install -y python3.10 python3.10-venv python3.10-dev || true
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 2
-update-alternatives --config python3 || true
+echo "[+] Upgrading Python build tools..."
+python3 -m pip install --upgrade --root-user-action=ignore pip setuptools wheel
 
 ARCH=$(dpkg --print-architecture)
 echo "[+] Detected architecture: $ARCH"
